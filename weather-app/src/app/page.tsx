@@ -1,3 +1,7 @@
+"use client";
+
+import React from "react";
+import { motion } from "framer-motion";
 import {
   Bell,
   Cloud,
@@ -8,6 +12,7 @@ import {
   Search,
   Sun,
   Wind,
+  ArrowUpRight,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,59 +29,101 @@ const forecast = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f7f5ef] text-[#26342b]">
+    <main className="min-h-screen overflow-hidden">
       <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10">
+        {/* Floating background shapes */}
+        <motion.div
+          className="pointer-events-none fixed -right-32 top-20 h-80 w-80 rounded-full bg-[#dce7dc]/60 blur-3xl"
+          animate={{ y: [0, -25, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <motion.div
+          className="pointer-events-none fixed -left-32 bottom-10 h-72 w-72 rounded-full bg-white/70 blur-3xl"
+          animate={{ y: [0, 20, 0], scale: [1, 1.08, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+
         {/* Header */}
-        <header className="flex items-center justify-between">
+        <motion.header
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative z-10 flex items-center justify-between"
+        >
           <div>
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
               WeatherGPT
             </h1>
-            <p className="mt-1 text-sm text-[#6f7d72]">
-              Your intelligent weather companion
+            <p className="mt-1 text-sm text-[#738078]">
+              Weather, understood naturally.
             </p>
           </div>
 
-          <Button variant="outline" size="icon" className="rounded-full">
+          <Button
+            variant="outline"
+            size="icon"
+            className="glass rounded-full shadow-sm"
+          >
             <Bell className="h-5 w-5" />
           </Button>
-        </header>
+        </motion.header>
 
         {/* Search */}
-        <section className="mt-8">
-          <Card className="rounded-2xl border-[#d8ddd4] bg-[#fffdf8] p-3 shadow-sm">
-            <div className="flex gap-3">
+        <motion.section
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.6 }}
+          className="relative z-10 mt-8"
+        >
+          <Card className="glass rounded-3xl p-2.5 weather-glow">
+            <div className="flex gap-2">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6f7d72]" />
+                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#738078]" />
                 <Input
-                  className="border-0 bg-transparent pl-10 shadow-none focus-visible:ring-0"
-                  placeholder="Search a city or ask about the weather..."
+                  className="h-12 border-0 bg-transparent pl-11 shadow-none focus-visible:ring-0"
+                  placeholder="Ask about any place or weather..."
                 />
               </div>
 
-              <Button className="rounded-xl bg-[#315c43] hover:bg-[#274b36]">
-                Search
+              <Button className="h-12 rounded-2xl bg-[#315c43] px-6 hover:bg-[#234532]">
+                Ask
               </Button>
             </div>
           </Card>
-        </section>
+        </motion.section>
 
-        {/* Current Weather */}
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-          <Card className="overflow-hidden rounded-3xl border-[#d8ddd4] bg-[#dce8dc] p-7 shadow-sm">
-            <div className="flex items-start justify-between">
+        {/* Hero */}
+        <motion.section
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.7 }}
+          className="relative z-10 mt-6"
+        >
+          <Card className="relative overflow-hidden rounded-[2rem] border-0 bg-[#dce7dc] p-7 shadow-none sm:p-10">
+            <div className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/30 blur-2xl" />
+
+            <div className="relative flex flex-col justify-between gap-10 sm:flex-row sm:items-center">
               <div>
                 <div className="flex items-center gap-2 text-sm text-[#52645a]">
                   <MapPin className="h-4 w-4" />
                   Your location
                 </div>
 
-                <p className="mt-6 text-sm text-[#52645a]">Current weather</p>
+                <p className="mt-8 text-sm text-[#52645a]">Current weather</p>
 
-                <div className="mt-1 flex items-center gap-4">
-                  <h2 className="text-6xl font-semibold tracking-tight">--°</h2>
+                <div className="mt-1 flex items-center gap-5">
+                  <motion.div className="float-slow">
+                    <CloudSun className="h-20 w-20 text-[#315c43]" />
+                  </motion.div>
+
                   <div>
-                    <p className="text-lg font-medium">Waiting for weather</p>
+                    <h2 className="text-6xl font-semibold tracking-tighter">
+                      --°
+                    </h2>
+                    <p className="mt-1 text-lg font-medium">
+                      Waiting for weather
+                    </p>
                     <p className="text-sm text-[#52645a]">
                       Connect a weather provider
                     </p>
@@ -84,106 +131,121 @@ export default function Home() {
                 </div>
               </div>
 
-              <CloudSun className="h-16 w-16 text-[#315c43]" />
-            </div>
-
-            <div className="mt-8 grid grid-cols-3 gap-3">
-              <WeatherMetric
-                icon={<Droplets className="h-4 w-4" />}
-                label="Humidity"
-                value="--%"
-              />
-              <WeatherMetric
-                icon={<Wind className="h-4 w-4" />}
-                label="Wind"
-                value="-- km/h"
-              />
-              <WeatherMetric
-                icon={<Sun className="h-4 w-4" />}
-                label="UV Index"
-                value="--"
-              />
+              <div className="grid grid-cols-3 gap-3 sm:w-[390px]">
+                <WeatherMetric
+                  icon={<Droplets />}
+                  label="Humidity"
+                  value="--%"
+                />
+                <WeatherMetric icon={<Wind />} label="Wind" value="-- km/h" />
+                <WeatherMetric icon={<Sun />} label="UV Index" value="--" />
+              </div>
             </div>
           </Card>
+        </motion.section>
 
-          {/* AI Assistant */}
-          <Card className="rounded-3xl border-[#d8ddd4] bg-[#fffdf8] p-7 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#dce8dc]">
-                <CloudSun className="h-5 w-5 text-[#315c43]" />
-              </div>
-
+        {/* AI */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.6 }}
+          className="relative z-10 mt-6"
+        >
+          <Card className="glass rounded-[2rem] p-7 weather-glow">
+            <div className="flex items-center justify-between">
               <div>
-                <h2 className="font-semibold">Ask WeatherGPT</h2>
-                <p className="text-xs text-[#6f7d72]">
-                  Conversational weather intelligence
+                <p className="text-sm font-medium text-[#315c43]">
+                  WEATHERGPT AI
                 </p>
+                <h2 className="mt-1 text-2xl font-semibold">Ask naturally.</h2>
               </div>
+
+              <ArrowUpRight className="h-5 w-5 text-[#738078]" />
             </div>
 
-            <div className="mt-6 rounded-2xl bg-[#f7f5ef] p-4">
-              <p className="text-sm leading-6 text-[#52645a]">
-                Ask me things like “Will it rain today?” or “What should I wear
-                tomorrow?”
-              </p>
-            </div>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-[#738078]">
+              Ask questions about rain, temperature, travel, clothing,
+              forecasts, alerts, or anything weather-related.
+            </p>
 
-            <div className="mt-4 flex gap-2">
-              <Input className="rounded-xl" placeholder="Ask anything..." />
-              <Button className="rounded-xl bg-[#315c43] hover:bg-[#274b36]">
+            <div className="mt-6 flex gap-2">
+              <Input
+                className="h-12 rounded-2xl bg-white/60"
+                placeholder="Will it rain tomorrow?"
+              />
+              <Button className="h-12 rounded-2xl bg-[#315c43] hover:bg-[#234532]">
                 Ask
               </Button>
             </div>
           </Card>
-        </section>
+        </motion.section>
 
         {/* Forecast */}
-        <section className="mt-6">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold">5-day forecast</h2>
-              <p className="text-sm text-[#6f7d72]">
-                A quick look at the days ahead
-              </p>
-            </div>
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.6 }}
+          className="relative z-10 mt-8"
+        >
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold">Forecast</h2>
+            <p className="text-sm text-[#738078]">
+              The next few days at a glance
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-            {forecast.map((item) => {
+            {forecast.map((item, index) => {
               const Icon = item.icon;
 
               return (
-                <Card
+                <motion.div
                   key={item.day}
-                  className="rounded-2xl border-[#d8ddd4] bg-[#fffdf8] p-5 shadow-sm"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + index * 0.08 }}
+                  whileHover={{ y: -5 }}
                 >
-                  <p className="text-sm font-medium">{item.day}</p>
-                  <Icon className="my-5 h-8 w-8 text-[#315c43]" />
+                  <Card className="glass rounded-3xl p-5 transition-shadow hover:shadow-lg">
+                    <p className="text-sm font-medium">{item.day}</p>
 
-                  <div className="flex items-end gap-2">
-                    <span className="text-2xl font-semibold">{item.high}</span>
-                    <span className="text-sm text-[#6f7d72]">{item.low}</span>
-                  </div>
-                </Card>
+                    <Icon className="my-7 h-8 w-8 text-[#315c43]" />
+
+                    <div className="flex items-end gap-2">
+                      <span className="text-2xl font-semibold">
+                        {item.high}
+                      </span>
+                      <span className="text-sm text-[#738078]">{item.low}</span>
+                    </div>
+                  </Card>
+                </motion.div>
               );
             })}
           </div>
-        </section>
+        </motion.section>
 
         {/* Alerts */}
-        <section className="mt-6">
-          <Card className="rounded-3xl border-[#d8ddd4] bg-[#fffdf8] p-6 shadow-sm">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65, duration: 0.6 }}
+          className="relative z-10 mt-6 pb-10"
+        >
+          <Card className="glass rounded-3xl p-6">
             <div className="flex items-center gap-3">
-              <Bell className="h-5 w-5 text-[#315c43]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#dce7dc]">
+                <Bell className="h-5 w-5 text-[#315c43]" />
+              </div>
+
               <div>
                 <h2 className="font-semibold">Weather alerts</h2>
-                <p className="text-sm text-[#6f7d72]">
+                <p className="text-sm text-[#738078]">
                   Important weather information will appear here.
                 </p>
               </div>
             </div>
           </Card>
-        </section>
+        </motion.section>
       </div>
     </main>
   );
@@ -199,12 +261,18 @@ function WeatherMetric({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl bg-[#fffdf8]/70 p-4">
-      <div className="flex items-center gap-2 text-[#52645a]">
-        {icon}
-        <span className="text-xs">{label}</span>
+    <motion.div
+      whileHover={{ scale: 1.03 }}
+      className="rounded-2xl bg-white/45 p-4 backdrop-blur-sm"
+    >
+      <div className="text-[#52645a]">
+        {React.cloneElement(icon as React.ReactElement, {
+          className: "h-4 w-4",
+        })}
       </div>
-      <p className="mt-2 text-lg font-semibold">{value}</p>
-    </div>
+
+      <p className="mt-3 text-xs text-[#738078]">{label}</p>
+      <p className="mt-1 text-lg font-semibold">{value}</p>
+    </motion.div>
   );
 }
